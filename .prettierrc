@@ -4,9 +4,7 @@
   "printWidth": 100,
   "singleQuote": true,
   "trailingComma": "none",
-  "plugins": [
-    "@trivago/prettier-plugin-sort-imports"
-  ],
+  "plugins": ["@trivago/prettier-plugin-sort-imports"],
   "importOrderSeparation": true,
   "importOrderSortSpecifiers": true,
   "importOrder": [

@@ -87,8 +87,7 @@ export const FaqDetailCard: React.FC<IFaqDetailCardProps> = ({ faqData }) => {
           <div>
             <p
               style={{ fontSize: '16px', fontWeight: '400', lineHeight: '24px' }}
-              className="tiptap-content-view"
-              dangerouslySetInnerHTML={{ __html: faqData.description || '' }}
+              dangerouslySetInnerHTML={{ __html: faqData.description }}
             />
           </div>
         ) : null}

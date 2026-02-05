@@ -46,8 +46,8 @@ export const OverviewSection: React.FC<OverviewSectionProps> = ({
         <Col>
           <Space className="w-100" direction="vertical" size={20}>
             <p
-              className="tiptap-content-view"
-              dangerouslySetInnerHTML={{ __html: description || '' }}
+              style={{ fontSize: '16px', fontWeight: '400', lineHeight: '24px' }}
+              dangerouslySetInnerHTML={{ __html: description }}
             />
           </Space>
         </Col>

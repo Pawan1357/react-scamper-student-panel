@@ -15,7 +15,7 @@ export const StyledTable = styled(Table)`
           top: 50%;
           left: 50%;
           inset-inline-start: 50% !important;
-          /* transform: translate(-50%, -50%); */
+          transform: translate(-50%, -50%);
           margin: 0;
         }
       }

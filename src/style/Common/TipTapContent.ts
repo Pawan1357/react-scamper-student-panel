@@ -3,12 +3,12 @@ import { createGlobalStyle } from 'styled-components';
 export const TiptapContent = createGlobalStyle`
   /* TipTap Content View Styles - Applied to elements displaying TipTap HTML content */
   .tiptap-content-view {
-  
+
     white-space: pre-wrap; /* Preserve whitespace from editor */
     word-wrap: break-word;
     overflow-wrap: break-word;
     max-width: 100%;
-
+    
     /* Typography */
     p {
       margin: 0.5em 0;

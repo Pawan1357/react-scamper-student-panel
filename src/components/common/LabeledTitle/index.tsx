@@ -28,10 +28,7 @@ export const LabeledTitle = ({
       {title && <h3 className={`title ${titleClassName}`}>{title}</h3>}
       {description && (
         <div>
-          <p
-            className={`${titleClassName} tiptap-content-view`}
-            dangerouslySetInnerHTML={{ __html: description }}
-          />
+          <p className={titleClassName} dangerouslySetInnerHTML={{ __html: description }} />
         </div>
       )}
       {link && (
