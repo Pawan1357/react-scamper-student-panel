@@ -311,12 +311,12 @@ export const StyledLayout = styled(Layout)`
     .mobile-nav-menu {
       border-right: none;
       background: ${theme.color.white};
-      padding: 16px 0;
+      padding: 16px 16px;
 
       .ant-menu-item {
         height: 56px;
         line-height: 56px;
-        margin: 0 12px 6px 12px;
+        margin: 0 12px 6px 0;
         padding: 0 20px;
         color: ${theme.color.text.primary};
         font-size: 15px;
@@ -367,7 +367,7 @@ export const StyledLayout = styled(Layout)`
       }
 
       .ant-menu-submenu {
-        margin: 0 12px 6px 12px;
+        margin: 0;
 
         .ant-menu-submenu-title {
           height: 56px;
@@ -419,7 +419,7 @@ export const StyledLayout = styled(Layout)`
           .ant-menu-item {
             height: 48px;
             line-height: 48px;
-            margin: 0 12px 4px 32px;
+            margin: 0 12px 4px 4px;
             padding: 0 20px;
             color: ${theme.color.text.primary} !important;
             font-size: 14px;
@@ -445,6 +445,7 @@ export const StyledLayout = styled(Layout)`
             }
 
             &.ant-menu-item-selected {
+              margin-top: 5px;
               color: ${theme.color.primary} !important;
               background-color: #b0deec;
               font-weight: 600;

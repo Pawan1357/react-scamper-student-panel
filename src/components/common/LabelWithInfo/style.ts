@@ -3,7 +3,7 @@ import { theme } from 'style/Theme';
 import styled from 'styled-components';
 
 export const LabelWrapper = styled.div`
-  display: flex;
+  /* display: flex; */
   flex-direction: column;
   gap: 5px;
   margin-bottom: 8px;
