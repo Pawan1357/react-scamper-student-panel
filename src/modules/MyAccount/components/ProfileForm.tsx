@@ -5,6 +5,7 @@ import { Avatar, Button, Form, Image, Row, Spin } from 'antd';
 import { useProfile } from 'modules/MyAccount/hooks/useProfile';
 
 import { INPUTS, MAX_TEXT_LENGTH, VALIDATION_MESSAGES } from 'utils/constants';
+import { REGEX } from 'utils/regex';
 
 import { RenderTextInput } from 'components/common/FormField';
 import { Loader } from 'components/common/Loader';
@@ -152,6 +153,10 @@ export const ProfileForm = ({
                     message: VALIDATION_MESSAGES.FIRST_NAME.REQUIRED
                   },
                   {
+                    pattern: REGEX.BLANK_SPACE,
+                    message: 'Please enter valid first name.'
+                  },
+                  {
                     max: MAX_TEXT_LENGTH.FIRST_NAME,
                     message: VALIDATION_MESSAGES.MAX_LENGTH.FIRST_NAME
                   }
@@ -173,11 +178,10 @@ export const ProfileForm = ({
               formItemProps={{
                 name: 'last_name',
                 label: INPUTS.LABEL.LAST_NAME,
-                required: true,
                 rules: [
                   {
-                    required: true,
-                    message: VALIDATION_MESSAGES.LAST_NAME.REQUIRED
+                    pattern: REGEX.BLANK_SPACE,
+                    message: 'Please enter valid last name.'
                   },
                   {
                     max: MAX_TEXT_LENGTH.FIRST_NAME,
@@ -188,7 +192,7 @@ export const ProfileForm = ({
               inputProps={{
                 disabled: !isEditMode || isUpdating,
                 size: 'large',
-                placeholder: INPUTS.PLACEHOLDER.LAST_NAME,
+                placeholder: isEditMode ? INPUTS.PLACEHOLDER.LAST_NAME : '',
                 onChange: handleCapitalizedChange('last_name')
               }}
             />
