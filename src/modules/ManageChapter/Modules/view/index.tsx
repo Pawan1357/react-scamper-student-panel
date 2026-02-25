@@ -1,4 +1,5 @@
 import { TITLES } from 'utils/constants';
+import { ROUTES } from 'utils/constants/routes';
 
 import { ContentTabsSection } from './components/ContentTabsSection';
 import { OverviewSection } from './components/OverviewSection';
@@ -22,7 +23,12 @@ const ViewChapterPage: React.FC = () => {
   return (
     <>
       <Meta title={`${TITLES.COMMON} - ${TITLES.CLASSROOM.VIEW_CHAPTER}`} />
-      <HeaderToolbar title={TITLES.CLASSROOM.VIEW_CHAPTER} isMultipleBtn backBtn />
+      <HeaderToolbar
+        title={TITLES.CLASSROOM.VIEW_CHAPTER}
+        isMultipleBtn
+        backBtn
+        backTo={ROUTES.dashboard}
+      />
 
       <ContentSection role="main">
         <DetailTabsWrapper>
