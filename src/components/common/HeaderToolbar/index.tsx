@@ -14,10 +14,22 @@ interface IHeaderToolbarProps {
   backTo?: string;
   className?: string;
   backButtonHandler?: () => void;
+
+  /** Enable responsive layout */
+  responsive?: boolean;
 }
 
 const HeaderToolbar: React.FC<IHeaderToolbarProps> = (props) => {
-  const { title, button, backBtn, backTo, className, isMultipleBtn, backButtonHandler } = props;
+  const {
+    title,
+    button,
+    backBtn,
+    backTo,
+    className,
+    isMultipleBtn,
+    backButtonHandler,
+    responsive
+  } = props;
   const navigate = useNavigate();
 
   const onBack = () => {
@@ -25,7 +37,9 @@ const HeaderToolbar: React.FC<IHeaderToolbarProps> = (props) => {
   };
 
   return (
-    <Wrapper className={`header-toolbar-wrap  ${className || ''}`}>
+    <Wrapper
+      className={`header-toolbar-wrap ${responsive ? 'layout-responsive' : ''} ${className || ''}`}
+    >
       <Row align="middle" justify="space-between" gutter={[10, 6]} className="main-row">
         {(title || button) && (
           <Col xs={24}>

@@ -39,7 +39,10 @@ export const ROUTES = {
   chapter: {
     list: `/chapters`,
     viewChapter: (chapterId: string) => `/chapters/view/${chapterId}`,
+    viewPastChapter: (chapterId: string) => `/chapters/past/${chapterId}`,
     viewLesson: (lessonId: string) => `/chapters/lesson/${lessonId}`,
-    viewActivity: (activityId: string) => `/chapters/activity/${activityId}`
+    viewPastLesson: (lessonId: string) => `/chapters/past/lesson/${lessonId}`,
+    viewActivity: (activityId: string) => `/chapters/activity/${activityId}`,
+    viewPastActivity: (activityId: string) => `/chapters/past/activity/${activityId}`
   }
 };

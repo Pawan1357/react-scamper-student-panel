@@ -190,15 +190,15 @@ export const TITLES = {
   },
   CLASSROOM: {
     VIEW_CHAPTER: 'View Chapter Details',
+    VIEW_PAST_CHAPTER: 'View Past Chapter Details',
     VIEW_LESSON: 'View Lesson',
-    VIEW_ACTIVITY: 'View Activity'
+    VIEW_PAST_LESSON: 'View Past Lesson',
+    VIEW_ACTIVITY: 'View Skill Check',
+    VIEW_PAST_ACTIVITY: 'View Past Skill Check'
   },
   CMS: {
     TnC: 'Terms and Conditions',
     PRIVACY_POLICY: 'Privacy Policy'
-  },
-  CHAPTER: {
-    LIST: 'Chapters'
   }
 };
 

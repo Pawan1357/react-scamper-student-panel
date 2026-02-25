@@ -1,6 +1,11 @@
 import { lazy } from 'react';
 
 import PublicGuard from 'guard/PublicGuard';
+import ViewLessonPage from 'modules/ManageChapter/Modules/Lesson';
+import ViewChapterPage from 'modules/ManageChapter/Modules/view';
+import ViewPastChapterPage from 'modules/ManageChapter/Modules/viewPast';
+import ViewPastActivityPage from 'modules/ManageChapter/Modules/viewPastActivity';
+import ViewPastLessonPage from 'modules/ManageChapter/Modules/viewPastLesson';
 import { Navigate, Route, Routes } from 'react-router-dom';
 
 import { ROUTES } from 'utils/constants/routes';
@@ -31,6 +36,8 @@ const ViewFaq = lazy(() => import('../modules/Faq/Modules/view/index'));
 
 const TermsAndCondition = lazy(() => import('../modules/CMSManagement/Module/TermsAndConditions'));
 const PrivacyPolicy = lazy(() => import('../modules/CMSManagement/Module/PrivacyPolicy'));
+
+const ViewActivityPage = lazy(() => import('../modules/ManageChapter/Modules/Activity'));
 
 const Routing = () => {
   const { isLoggedIn } = authStore();
@@ -84,6 +91,22 @@ const Routing = () => {
         <Route path={ROUTES.termsAndConditions} element={<TermsAndCondition />} />
         <Route path={ROUTES.privacyPolicy} element={<PrivacyPolicy />} />
         <Route path={ROUTES.default} element={<Navigate replace to={ROUTES.dashboard} />} />
+
+        {/* Chapter */}
+        {/* chapters */}
+        <Route path={ROUTES.chapter.viewChapter(':chapterId')} element={<ViewChapterPage />} />
+        <Route
+          path={ROUTES.chapter.viewPastChapter(':chapterId')}
+          element={<ViewPastChapterPage />}
+        />
+        <Route path={ROUTES.chapter.viewLesson(':lessonId')} element={<ViewLessonPage />} />
+        <Route path={ROUTES.chapter.viewPastLesson(':lessonId')} element={<ViewPastLessonPage />} />
+        <Route path={ROUTES.chapter.viewActivity(':activityId')} element={<ViewActivityPage />} />
+        <Route
+          path={ROUTES.chapter.viewPastActivity(':activityId')}
+          element={<ViewPastActivityPage />}
+        />
+
         <Route path="*" element={<Navigate replace to={ROUTES.pageNotFound} />} />
       </Route>
       <Route path="*" element={<Navigate replace to={ROUTES.signIn} />} />

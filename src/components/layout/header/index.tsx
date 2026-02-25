@@ -172,6 +172,7 @@ const Header = () => {
     authFail();
     queryClient.clear();
     showToaster('success', 'You are successfully logged out.');
+    navigate(ROUTES.signIn, { replace: true });
   };
 
   const items: MenuProps['items'] = [

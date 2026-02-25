@@ -1,7 +1,7 @@
 import { Typography } from 'antd';
 import AntdStyle from 'style/Antd';
 import { Spacing } from 'style/Common/Spacing';
-import { TiptapContent } from 'style/Common/TipTapContent';
+import { TiptapContent } from 'style/Common/TiptapContent';
 import { Common } from 'style/Common/common';
 
 import { Flex } from '../Common/flex';

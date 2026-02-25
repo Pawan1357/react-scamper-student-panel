@@ -49,7 +49,7 @@ const ConfirmModal: React.FC<IConfirmModalProps> = (props) => {
       )}
       <CommonModal
         {...modalProps}
-        width={415}
+        width={modalProps.width ?? 415}
         open={modalOpen}
         onCancel={onCancelClick}
         onOk={onOkClick}

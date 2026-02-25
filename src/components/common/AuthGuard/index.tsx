@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 import { ROUTES } from 'utils/constants/routes';
 
@@ -14,15 +14,22 @@ interface AuthGuardProps {
 
 const AuthGuard: React.FC<AuthGuardProps> = ({ children }) => {
   const navigate = useNavigate();
+  const location = useLocation();
 
   const { isLoggedIn } = authStore((state) => state);
 
   useEffect(() => {
     if (!isLoggedIn) {
-      // TODO : Uncomment the line above and provide the correct import for ROUTES
-      navigate(ROUTES.signIn, { replace: true });
+      // Store the current path as redirect parameter
+      const currentPath = location.pathname + location.search;
+      // Only add redirect if it's not already the sign-in page
+      if (currentPath !== ROUTES.signIn) {
+        navigate(`${ROUTES.signIn}?redirect=${encodeURIComponent(currentPath)}`, { replace: true });
+      } else {
+        navigate(ROUTES.signIn, { replace: true });
+      }
     }
-  }, [isLoggedIn, navigate]);
+  }, [isLoggedIn, navigate, location]);
   if (isLoggedIn) return <>{children}</>;
   else
     return (

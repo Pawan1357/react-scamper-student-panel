@@ -5,8 +5,10 @@ import { formatDate } from 'utils/constants/day';
 import { ROUTES } from 'utils/constants/routes';
 import { questionType } from 'utils/functions';
 
-import { HourGlassIcon } from 'components/svg';
+import { HourGlassIcon, LockedIcon } from 'components/svg';
 
+import { StatusTag } from '../StatusTag';
+import { STATUS_TAG_COLOR } from '../StatusTag/types';
 import { CurriculamItem, CurriculamList } from './styles';
 import type { CurriculumItemCardProps } from './types';
 
@@ -16,12 +18,42 @@ const CurriculumItemCard = ({
   listData,
   btnText,
   isDetailIcon,
-  isActivity
+  isActivity,
+  showStatusBadge = false
 }: CurriculumItemCardProps) => {
   const navigate = useNavigate();
-
   const getActivityRoute = (activityId: string) => {
     return ROUTES.chapter.viewActivity(activityId);
+  };
+
+  // const getLessonRoute = (lessonId: string) => {
+  //   return ROUTES.chapter.viewLesson(lessonId);
+  // };
+
+  const getStatusColor = (status: string) => {
+    switch (status?.toLowerCase()) {
+      case 'completed':
+        return STATUS_TAG_COLOR.SUCCESS_PRIMARY; // Green
+      case 'pending':
+        return STATUS_TAG_COLOR.DANGER; // Red
+      case 'in_progress':
+        return STATUS_TAG_COLOR.PENDING; // Orange
+      default:
+        return STATUS_TAG_COLOR.GRAY;
+    }
+  };
+
+  const getStatusText = (status: string) => {
+    switch (status?.toLowerCase()) {
+      case 'completed':
+        return 'Complete';
+      case 'pending':
+        return 'Pending';
+      case 'in_progress':
+        return 'In Progress';
+      default:
+        return status || 'Complete';
+    }
   };
 
   return (
@@ -32,9 +64,17 @@ const CurriculumItemCard = ({
             <div className="curriculam-inner">
               <div className="curriculam-details-wrapper">
                 {isActivity ? (
-                  <Title id={`${data?.id}-title`} level={4}>
-                    {data?.name}
-                  </Title>
+                  <div className="title-with-badge">
+                    <Title id={`${data?.id}-title`} level={4} style={{ margin: 0 }}>
+                      {data?.name}
+                    </Title>
+                    {showStatusBadge && data?.status && (
+                      <StatusTag
+                        status={getStatusText(data.status)}
+                        color={getStatusColor(data.status)}
+                      />
+                    )}
+                  </div>
                 ) : (
                   <Title id={`${data?.id}-title`} level={4}>
                     Lesson {data?.sequence}: <span style={{ fontWeight: 400 }}>{data?.name}</span>
@@ -49,13 +89,13 @@ const CurriculumItemCard = ({
                     )}
                     {!isActivity && (
                       <Text className="curriculam-detail-item">
-                        {data?.activities_count} Activities
+                        {data?.activity_count} Skill Checks
                       </Text>
                     )}
                     {isActivity && (
                       <>
                         <Text className="curriculam-detail-item">
-                          Activities Type:{' '}
+                          Skill Check Type
                           <span className="value-text"> {questionType(data?.type)}</span>
                         </Text>
 
@@ -65,7 +105,7 @@ const CurriculumItemCard = ({
                         </Text>
 
                         <Text className="curriculam-detail-item">
-                          Activity Created Date:{' '}
+                          Skill Check Created Date:{' '}
                           <span className="value-text">
                             {formatDate(data?.created_at, 'MM/DD/YYYY')}
                           </span>
@@ -79,14 +119,21 @@ const CurriculumItemCard = ({
                 type="primary"
                 size="large"
                 className="border-md"
-                onClick={() =>
-                  isActivity
-                    ? navigate(getActivityRoute(String(data?.id)))
-                    : navigate(`${ROUTES.chapter.viewLesson(String(data?.id))}`)
-                }
-                aria-label={`View ${data?.name || 'lesson'} activities`}
+                disabled={!isActivity && data?.is_locked}
+                icon={!isActivity && data?.is_locked ? <LockedIcon /> : null}
+                onClick={() => {
+                  if (isActivity) {
+                    // `showStatusBadge` is purely UI; routing to past vs current depends only on `isPastContext`
+                    window.location.href = getActivityRoute(String(data?.id));
+                    // navigate(ROUTES.chapter.viewActivity(String(data?.id)));
+                  } else {
+                    // window.location.href = getLessonRoute(String(data?.id));
+                    navigate(ROUTES.chapter.viewLesson(String(data?.id)));
+                  }
+                }}
+                aria-label={`View ${data?.name || 'lesson'} skill checks`}
               >
-                {btnText}
+                {!isActivity && data?.is_locked ? 'Locked' : btnText}
               </Button>
             </div>
           </CurriculamItem>

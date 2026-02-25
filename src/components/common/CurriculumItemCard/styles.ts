@@ -8,6 +8,20 @@ export const CurriculamList = styled.div`
   gap: 25px;
 `;
 
+export const StatusBadge = styled.span`
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px 12px;
+  border-radius: 16px;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+  background: #52c41a;
+  color: #ffffff;
+  margin-left: 8px;
+`;
+
 export const CurriculamItem = styled(Card)`
   border-radius: 20px;
   border: none;
@@ -29,6 +43,12 @@ export const CurriculamItem = styled(Card)`
     display: flex;
     flex-direction: column;
     gap: 5px;
+  }
+
+  .title-with-badge {
+    display: flex;
+    align-items: center;
+    gap: 8px;
   }
 
   .curriculam-details {

@@ -153,6 +153,166 @@ export const ModalWrapper = styled(Modal)`
         }
       }
 
+      &.answer-result-modal {
+        .ant-modal-content {
+          padding: 20px 24px 16px;
+          max-height: 85vh;
+          display: flex;
+          flex-direction: column;
+        }
+
+        .ant-modal-body {
+          overflow-y: auto;
+          overflow-x: hidden;
+          flex: 1;
+          padding: 0;
+          max-height: calc(85vh - 120px);
+        }
+
+        .ant-modal-footer {
+          margin-top: 12px;
+          padding-top: 12px;
+          border-top: 1px solid #f0f0f0;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 10px;
+          flex-shrink: 0;
+
+          .ant-btn {
+            &.cta-btn {
+              height: 36px;
+              margin: 0;
+              width: 100%;
+              font-size: 14px;
+            }
+          }
+        }
+
+        .modal-body-wrap {
+          text-align: center;
+          display: flex;
+          flex-direction: column;
+          gap: 6px;
+
+          .modal-icon-wrap {
+            width: 100%;
+            height: 100%;
+            max-width: 40px;
+            max-height: 40px;
+            overflow: hidden;
+            border-radius: 50%;
+            display: block;
+            margin: 0 auto 6px;
+          }
+          .modal-title {
+            font-size: 15px;
+            margin-bottom: 6px;
+            color: ${({ theme }) => theme.color.primary};
+          }
+          .modal-desc {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            margin-top: 0;
+            max-height: calc(85vh - 200px);
+            overflow-y: auto;
+            overflow-x: hidden;
+            padding-right: 4px;
+          }
+        }
+
+        @media (max-width: 768px) {
+          .ant-modal-content {
+            padding: 16px 20px 12px;
+          }
+          .ant-modal-body {
+            max-height: calc(85vh - 110px);
+          }
+        }
+
+        @media (max-width: 480px) {
+          .ant-modal-content {
+            padding: 14px 18px 10px;
+          }
+          .ant-modal-body {
+            max-height: calc(85vh - 100px);
+          }
+        }
+      }
+
+      &.answer-result-modal-scrollable {
+        width: 600px !important;
+        max-width: 600px !important;
+
+        .ant-modal-content {
+          padding: 20px 24px 16px;
+          height: 500px;
+          max-height: 500px;
+          display: flex;
+          flex-direction: column;
+          overflow: hidden;
+        }
+
+        .ant-modal-body {
+          overflow-y: auto;
+          overflow-x: hidden;
+          flex: 1;
+          padding: 0;
+          min-height: 0;
+          flex-shrink: 1;
+
+          /* Custom scrollbar styling */
+          &::-webkit-scrollbar {
+            width: 6px;
+          }
+
+          &::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+          }
+
+          &::-webkit-scrollbar-thumb {
+            background: #c8c8c8;
+            border-radius: 10px;
+          }
+
+          &::-webkit-scrollbar-thumb:hover {
+            background: #a8a8a8;
+          }
+        }
+
+        .modal-body-wrap {
+          .modal-desc {
+            overflow: visible;
+            max-height: none;
+          }
+        }
+
+        @media (max-width: 768px) {
+          width: 90% !important;
+          max-width: 90% !important;
+
+          .ant-modal-content {
+            padding: 16px 20px 12px;
+            height: 450px;
+            max-height: 450px;
+          }
+        }
+
+        @media (max-width: 480px) {
+          width: 95% !important;
+          max-width: 95% !important;
+
+          .ant-modal-content {
+            padding: 14px 18px 10px;
+            height: 400px;
+            max-height: 400px;
+          }
+        }
+      }
+
       &.add-color-modal,
       &.resource-category-modal,
       &.resource-tag-modal {

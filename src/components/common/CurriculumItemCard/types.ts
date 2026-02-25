@@ -7,4 +7,6 @@ export interface CurriculumItemCardProps {
   isLabel?: boolean;
   isActivity?: boolean;
   module?: LessonModule;
+  showStatusBadge?: boolean;
+  isPastContext?: boolean;
 }

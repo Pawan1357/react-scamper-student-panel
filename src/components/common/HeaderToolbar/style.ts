@@ -78,4 +78,56 @@ export const Wrapper = styled.div`
       }
     }
   }
+
+  /* ================================================= */
+  /* RESPONSIVE LAYOUT (OPT-IN) */
+  /* ================================================= */
+
+  &.layout-responsive.header-toolbar-wrap {
+    .sub-row {
+      height: auto;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      row-gap: 8px;
+
+      .cta-wrap {
+        position: static;
+        right: auto;
+        display: flex;
+        flex-wrap: wrap;
+        max-width: 100%;
+      }
+
+      .btn-wrapper {
+        flex-wrap: wrap;
+        justify-content: flex-start;
+      }
+    }
+
+    @media (max-width: ${({ theme }) => theme.device.sm}) {
+      .sub-row {
+        align-items: flex-start;
+
+        .title-wrap {
+          width: 100%;
+
+          .page-title {
+            ${textEllipsis}
+            font-size: 20px;
+          }
+        }
+
+        .cta-wrap {
+          width: 100%;
+          flex-wrap: nowrap;
+          overflow-x: auto;
+          padding-bottom: 4px;
+        }
+
+        .btn-wrapper {
+          flex-wrap: nowrap;
+        }
+      }
+    }
+  }
 `;

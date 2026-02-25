@@ -86,7 +86,9 @@ export const getInitials = (first_name: string, last_name: string, full_name?: s
         .map((name) => name[0])
         .join('')
     : '';
-  return first_name && last_name ? `${first_name?.[0] || ''}${last_name?.[0] || ''}` : initial;
+  return first_name && last_name
+    ? `${first_name?.[0] || ''}${last_name?.[0] || ''}`
+    : initial || first_name?.[0] || '';
 };
 
 export const capitalizeFirstLetterWhileTyping = (value: string) => {

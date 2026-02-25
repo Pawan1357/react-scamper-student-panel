@@ -15,6 +15,7 @@ export interface IDeleteRecordModalProps extends ModalProps {
 export interface IConfirmModalProps {
   modalProps: ICommonModalProps & {
     title?: string;
+    width?: number;
     question?: string;
     description?: string | React.ReactNode;
     onOk?: (e: React.MouseEvent<HTMLButtonElement>) => Promise<void> | void;
