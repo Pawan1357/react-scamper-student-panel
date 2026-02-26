@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import { IMAGE_URL } from 'utils/constants';
 import { ImageTypeEnum } from 'utils/constants/enum';
@@ -380,6 +380,29 @@ export const PairMatching = ({
   const [draggedFromPairIndex, setDraggedFromPairIndex] = useState<number | null>(null);
   const [dragOverIndex, setDragOverIndex] = useState<number | null>(null);
   const [dragOverAvailableItemId, setDragOverAvailableItemId] = useState<number | null>(null);
+  // Touch drag: preview position (follows finger like desktop ghost)
+  const [dragPreviewPosition, setDragPreviewPosition] = useState<{ x: number; y: number } | null>(
+    null
+  );
+
+  // Touch drag state (for tablet/touch devices where HTML5 DnD doesn't fire)
+  const touchDragRef = useRef<{
+    touchId: number;
+    item: any;
+    fromPairIndex: number | null;
+    startX: number;
+    startY: number;
+    hasMoved: boolean;
+  } | null>(null);
+  const TOUCH_DRAG_THRESHOLD = 10;
+
+  // Refs for touch handlers to read latest values
+  const pairsRef = useRef(pairs);
+  const isSubmittedRef = useRef(isSubmitted);
+  const isViewModeRef = useRef(isViewMode);
+  pairsRef.current = pairs;
+  isSubmittedRef.current = isSubmitted;
+  isViewModeRef.current = isViewMode;
 
   // Reset drag state when question changes
   useEffect(() => {
@@ -387,6 +410,8 @@ export const PairMatching = ({
     setDraggedFromPairIndex(null);
     setDragOverIndex(null);
     setDragOverAvailableItemId(null);
+    setDragPreviewPosition(null);
+    touchDragRef.current = null;
   }, [leftItems, rightItems]);
 
   const handleDragStart = (e: React.DragEvent, item: any, fromPairIndex: number | null = null) => {
@@ -414,30 +439,137 @@ export const PairMatching = ({
     }
   };
 
+  // Shared drop logic (used by both mouse DnD and touch)
+  const applyDropOnPair = useCallback(
+    (pairIndex: number, item: any, fromPairIndex: number | null) => {
+      if (!item || isSubmittedRef.current || isViewModeRef.current) return;
+      const currentPairs = [...pairsRef.current];
+      const existingRight = currentPairs[pairIndex].right;
+      if (fromPairIndex !== null) {
+        currentPairs[pairIndex].right = item;
+        currentPairs[fromPairIndex].right = existingRight;
+      } else {
+        currentPairs[pairIndex].right = item;
+      }
+      setPairs(currentPairs);
+      setDraggedItem(null);
+      setDraggedFromPairIndex(null);
+      setDragOverIndex(null);
+      setDragOverAvailableItemId(null);
+    },
+    []
+  );
+
   const handleDropOnPair = (e: React.DragEvent, pairIndex: number) => {
     e.preventDefault();
     if (!draggedItem || isSubmitted || isViewMode) return;
+    applyDropOnPair(pairIndex, draggedItem, draggedFromPairIndex);
+  };
 
-    const newPairs = [...pairs];
-    const existingRight = newPairs[pairIndex].right;
+  // Touch handlers for tablet/touch devices
+  const handleTouchStart = useCallback(
+    (e: React.TouchEvent, item: any, fromPairIndex: number | null) => {
+      if (isSubmitted || isViewMode || touchDragRef.current) return;
+      const touch = e.changedTouches[0];
+      if (!touch) return;
+      touchDragRef.current = {
+        touchId: touch.identifier,
+        item,
+        fromPairIndex,
+        startX: touch.clientX,
+        startY: touch.clientY,
+        hasMoved: false
+      };
+      setDraggedItem(item);
+      setDraggedFromPairIndex(fromPairIndex);
+    },
+    [isSubmitted, isViewMode]
+  );
 
-    // If dragging from another pair, swap the items
-    if (draggedFromPairIndex !== null) {
-      // Place the dragged item in the target pair
-      newPairs[pairIndex].right = draggedItem;
-      // Place the existing item (if any) in the source pair
-      newPairs[draggedFromPairIndex].right = existingRight;
-    } else {
-      // If dragging from somewhere else (shouldn't happen now), just place it
-      newPairs[pairIndex].right = draggedItem;
-    }
+  const setDragPreviewPositionRef = useRef(setDragPreviewPosition);
+  setDragPreviewPositionRef.current = setDragPreviewPosition;
 
-    setPairs(newPairs);
+  useEffect(() => {
+    const onTouchMove = (e: TouchEvent) => {
+      const ref = touchDragRef.current;
+      if (!ref || ref.touchId === undefined) return;
+      const touch = Array.from(e.touches).find((t) => t.identifier === ref.touchId);
+      if (!touch) return;
+      if (!ref.hasMoved) {
+        const dx = touch.clientX - ref.startX;
+        const dy = touch.clientY - ref.startY;
+        if (Math.abs(dx) > TOUCH_DRAG_THRESHOLD || Math.abs(dy) > TOUCH_DRAG_THRESHOLD) {
+          ref.hasMoved = true;
+        }
+      }
+      // Update floating preview position (same effect as desktop drag ghost)
+      if (ref.hasMoved) {
+        setDragPreviewPositionRef.current({ x: touch.clientX, y: touch.clientY });
+      }
+      // Prevent scroll whenever user is touching a draggable and moving (stops page scroll)
+      e.preventDefault();
+    };
+    document.addEventListener('touchmove', onTouchMove, { passive: false, capture: true });
+    return () => document.removeEventListener('touchmove', onTouchMove, true);
+  }, []);
+
+  const handleTouchEndRef = useRef<(e: TouchEvent) => void>(() => {});
+  const applyDropOnPairRef = useRef(applyDropOnPair);
+  applyDropOnPairRef.current = applyDropOnPair;
+
+  const handleTouchEnd = useCallback((e: TouchEvent) => {
+    const ref = touchDragRef.current;
+    if (!ref) return;
+    const touch = Array.from(e.changedTouches).find((t) => t.identifier === ref.touchId);
+    if (!touch) return;
+    touchDragRef.current = null;
     setDraggedItem(null);
     setDraggedFromPairIndex(null);
     setDragOverIndex(null);
     setDragOverAvailableItemId(null);
-  };
+    setDragPreviewPosition(null);
+
+    if (!ref.hasMoved) return; // was a tap, not a drag
+
+    const x = touch.clientX;
+    const y = touch.clientY;
+    const el = document.elementFromPoint(x, y);
+    if (!el) return;
+
+    const pairDrop = el.closest('[data-pair-drop-index]');
+    const availableDrop = el.closest('[data-available-drop]');
+    if (pairDrop) {
+      const indexStr = pairDrop.getAttribute('data-pair-drop-index');
+      if (indexStr !== null) {
+        const pairIndex = parseInt(indexStr, 10);
+        if (!Number.isNaN(pairIndex)) {
+          applyDropOnPairRef.current(pairIndex, ref.item, ref.fromPairIndex);
+          return;
+        }
+      }
+    }
+    if (availableDrop && ref.fromPairIndex !== null) {
+      setPairs((prev) => {
+        const newPairs = [...prev];
+        newPairs[ref.fromPairIndex!].right = null;
+        return newPairs;
+      });
+    }
+  }, []);
+
+  handleTouchEndRef.current = handleTouchEnd;
+
+  useEffect(() => {
+    const onTouchEnd = (e: TouchEvent) => {
+      handleTouchEndRef.current(e);
+    };
+    document.addEventListener('touchend', onTouchEnd, { passive: true });
+    document.addEventListener('touchcancel', onTouchEnd, { passive: true });
+    return () => {
+      document.removeEventListener('touchend', onTouchEnd);
+      document.removeEventListener('touchcancel', onTouchEnd);
+    };
+  }, []);
 
   // Get available right items (not yet matched)
   const availableRightItems = useMemo(() => {
@@ -448,9 +580,42 @@ export const PairMatching = ({
 
   return (
     <div>
+      {/* Touch drag preview: follows finger like desktop drag ghost */}
+      {draggedItem && dragPreviewPosition && (
+        <div
+          aria-hidden
+          style={{
+            position: 'fixed',
+            left: dragPreviewPosition.x,
+            top: dragPreviewPosition.y,
+            transform: 'translate(-50%, -50%)',
+            zIndex: 9999,
+            pointerEvents: 'none',
+            minWidth: 200,
+            maxWidth: 280,
+            padding: '16px',
+            borderRadius: '12px',
+            background: '#ffffff',
+            border: '2px solid #1890ff',
+            boxShadow: '0 8px 24px rgba(0,0,0,0.15)',
+            opacity: 0.95
+          }}
+        >
+          <SimpleOptionDisplay
+            option={{
+              id: draggedItem?.id,
+              option_image: draggedItem?.option_image,
+              option_text: draggedItem?.option_text
+            }}
+            showDragIcon={true}
+          />
+        </div>
+      )}
+
       {/* Available right items to drag */}
       {!isSubmitted && !isViewMode && (
         <div
+          data-available-drop
           style={{ marginBottom: '24px' }}
           onDragOver={(e) => {
             e.preventDefault();
@@ -482,6 +647,7 @@ export const PairMatching = ({
                 <div
                   key={rightItem.id}
                   draggable={true}
+                  onTouchStart={(e) => handleTouchStart(e, rightItem, null)}
                   onDragStart={(e) => {
                     e.stopPropagation();
                     handleDragStart(e, rightItem, null);
@@ -511,6 +677,7 @@ export const PairMatching = ({
                     opacity: draggedItem?.id === rightItem.id ? 0.5 : 1,
                     transition: 'all 0.2s ease',
                     userSelect: 'none',
+                    touchAction: 'none',
                     transform: dragOverAvailableItemId === rightItem.id ? 'scale(1.02)' : 'scale(1)'
                   }}
                 >
@@ -579,6 +746,7 @@ export const PairMatching = ({
 
             {/* Right item (draggable drop zone) */}
             <div
+              data-pair-drop-index={index}
               onDragOver={isSubmitted || isViewMode ? undefined : (e) => handleDragOver(e, index)}
               onDragLeave={isSubmitted || isViewMode ? undefined : (e) => handleDragLeave(e)}
               onDrop={
@@ -625,6 +793,7 @@ export const PairMatching = ({
               {pair.right ? (
                 <div
                   draggable={!isSubmitted && !isViewMode}
+                  onTouchStart={(e) => handleTouchStart(e, pair.right, index)}
                   onDragStart={(e) => {
                     e.stopPropagation();
                     handleDragStart(e, pair.right, index);
@@ -632,7 +801,8 @@ export const PairMatching = ({
                   style={{
                     cursor: isSubmitted || isViewMode ? 'default' : 'grab',
                     opacity: draggedItem?.id === pair.right?.id ? 0.5 : 1,
-                    userSelect: 'none'
+                    userSelect: 'none',
+                    touchAction: 'none'
                   }}
                 >
                   <SimpleOptionDisplay
