@@ -52,7 +52,12 @@ const WheelContainer = styled.div`
   justify-content: center;
   padding: 20px 0;
   width: 100%;
-  gap: 24px;
+  gap: 50px;
+
+  @media (max-width: 768px) {
+    gap: 100px;
+    padding: 40px 0 0 0;
+  }
 `;
 
 const SpinButton = styled.button`
@@ -64,14 +69,15 @@ const SpinButton = styled.button`
   font-size: 16px;
   font-weight: 600;
   cursor: pointer;
+  width: 100%;
   transition: all 0.2s;
-  min-width: 150px;
+  /* min-width: 150px; */
 
-  &:hover:not(:disabled) {
+  /* &:hover:not(:disabled) {
     background: #4e6bff;
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(78, 107, 255, 0.4);
-  }
+  } */
 
   &:active:not(:disabled) {
     transform: translateY(0);
@@ -326,6 +332,7 @@ export const SpinningWheelModal: React.FC<SpinningWheelModalProps> = ({
           icon: <></>,
           okText: '',
           cancelText: '',
+          footer: null,
           cancelButtonProps: { style: { display: 'none' } },
           okButtonProps: { style: { display: 'none' } },
           className: 'spinning-wheel-modal',

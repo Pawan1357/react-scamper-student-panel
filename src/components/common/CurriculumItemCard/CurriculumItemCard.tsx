@@ -46,13 +46,13 @@ const CurriculumItemCard = ({
   const getStatusText = (status: string) => {
     switch (status?.toLowerCase()) {
       case 'completed':
-        return 'Complete';
+        return 'Completed';
       case 'pending':
         return 'Pending';
       case 'in_progress':
         return 'In Progress';
       default:
-        return status || 'Complete';
+        return status || 'Completed';
     }
   };
 
