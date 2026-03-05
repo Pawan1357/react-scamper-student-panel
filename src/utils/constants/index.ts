@@ -189,7 +189,7 @@ export const TITLES = {
     SETUP_PASSWORD: 'Setup Password'
   },
   CLASSROOM: {
-    VIEW_CHAPTER: 'View Chapter Details',
+    VIEW_CHAPTER: (name?: string) => (name ? `View ${name} Details` : 'View Chapter Details'),
     VIEW_PAST_CHAPTER: 'View Past Chapter Details',
     VIEW_LESSON: 'View Lesson',
     VIEW_PAST_LESSON: 'View Past Lesson',

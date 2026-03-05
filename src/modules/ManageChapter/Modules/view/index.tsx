@@ -22,9 +22,9 @@ const ViewChapterPage: React.FC = () => {
 
   return (
     <>
-      <Meta title={`${TITLES.COMMON} - ${TITLES.CLASSROOM.VIEW_CHAPTER}`} />
+      <Meta title={`${TITLES.COMMON} - ${TITLES.CLASSROOM.VIEW_CHAPTER(chapterData?.name)}`} />
       <HeaderToolbar
-        title={TITLES.CLASSROOM.VIEW_CHAPTER}
+        title={TITLES.CLASSROOM.VIEW_CHAPTER(chapterData?.name)}
         isMultipleBtn
         backBtn
         backTo={ROUTES.dashboard}
